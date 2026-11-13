@@ -1,0 +1,47 @@
+name: Build
+
+on:
+  push:
+    branches: [master, swift6-modernize]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: ${{ matrix.scheme }} (${{ matrix.configuration }})
+    runs-on: macos-15
+    strategy:
+      fail-fast: false
+      matrix:
+        scheme: [Countdown, Preview]
+        configuration: [Debug, Release]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Build
+        run: |
+          set -o pipefail
+          xcodebuild -project Countdown.xcodeproj \
+            -scheme "${{ matrix.scheme }}" \
+            -configuration "${{ matrix.configuration }}" \
+            -derivedDataPath build \
+            -destination 'platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            build 2>&1 | tee /tmp/build.log
+
+      - name: Check for warnings
+        run: |
+          # Ignore the destination-selection notice and the App Intents
+          # metadata processor, neither of which is actionable here.
+          if grep "warning:" /tmp/build.log \
+              | grep -v "multiple matching destinations" \
+              | grep -v "appintentsmetadataprocessor"; then
+            echo "::error::Build emitted warnings"
+            exit 1
+          fi

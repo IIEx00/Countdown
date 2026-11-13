@@ -6,6 +6,26 @@ You can configure the date once you picked it in Screen Saver settings in System
 
 [![Countdown Screen Saver](Countdown.gif)](Countdown.gif)
 
+## About this fork
+
+This is a fork of [soffes/Countdown](https://github.com/soffes/Countdown), which
+was last updated in July 2018. The upstream code no longer builds on current
+Xcode, so this fork exists to keep the screen saver usable on modern macOS.
+
+What differs from upstream:
+
+- Builds with Xcode 27 / Swift 6 on macOS 13.0 and later
+- Ad-hoc signing, so no developer account or team certificate is required
+- `make install` handles the build, install, and screen saver host restart
+- Preview target migrated off the deprecated `@NSApplicationMain`
+
+The screen saver itself is unchanged: same display, same preferences, same
+file format. Existing settings are read as before.
+
+Upstream pull requests are still welcome — see
+[soffes/Countdown](https://github.com/soffes/Countdown/issues). This fork tracks
+upstream `master` and will rebase if it ever moves again.
+
 ## Requirements
 
 - macOS 13.0 or later
