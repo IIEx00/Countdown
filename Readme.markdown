@@ -22,9 +22,17 @@ What differs from upstream:
 The screen saver itself is unchanged: same display, same preferences, same
 file format. Existing settings are read as before.
 
-Upstream pull requests are still welcome — see
-[soffes/Countdown](https://github.com/soffes/Countdown/issues). This fork tracks
-upstream `master` and will rebase if it ever moves again.
+Mirrors:
+
+- Gitee (primary, works from mainland China): https://gitee.com/erosxxx/countdown
+- GitHub: https://github.com/IIEx00/Countdown
+
+Upstream pull requests are still welcome. This fork tracks upstream `master`
+and will rebase if it ever moves again.
+
+> **Note:** CI runs on GitHub Actions (`.github/workflows/build.yml`), so the
+> build check does not run on the Gitee mirror. Build locally with `make` to
+> get the same verification.
 
 ## Requirements
 
@@ -38,8 +46,12 @@ block it for anyone else. Build it from source instead — it takes one command.
 ## Install
 
 ```bash
+git clone https://gitee.com/erosxxx/countdown.git
+cd countdown
 make install
 ```
+
+If you cannot reach Gitee, clone the GitHub mirror instead.
 
 That builds `Countdown.saver` and copies it to `~/Library/Screen Savers/`.
 
