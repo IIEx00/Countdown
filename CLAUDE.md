@@ -10,29 +10,28 @@ Countdown 是一个 macOS 屏幕保护程序（`.saver` bundle），fork 自 [Mo
 
 ## 常用命令
 
-没有测试 target，也没有 lint 配置。
+没有测试 target，也没有 lint 配置。日常操作走仓库根目录的 `Makefile`，它会自动把 `DEVELOPER_DIR` 指向 `/Applications/Xcode.app`（本机 `xcode-select` 指向 CommandLineTools，直接跑 `xcodebuild` 会报 "requires Xcode"）：
 
-本机 `xcode-select` 指向 CommandLineTools，直接跑 `xcodebuild` 会报 "requires Xcode"，需用 `DEVELOPER_DIR` 指定 Xcode：
+```bash
+make            # 构建 -> build/Build/Products/Release/Countdown.saver
+make install    # 构建 + 复制到 ~/Library/Screen Savers，校验签名并重启 legacyScreenSaver
+make preview    # 构建 Debug Preview.app 并打开
+make uninstall  # 删除已安装的 saver
+make clean      # 删除 build/
+```
+
+等价的手工命令：
 
 ```bash
 export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
-
-# 构建 saver（产物在 build/Build/Products/Release/Countdown.saver）
 xcodebuild -project Countdown.xcodeproj -scheme Countdown -configuration Release \
   -derivedDataPath build build
-
-# 安装到系统可用的 saver 目录（安装后需重启 System Settings 才会刷新）
-cp -R build/Build/Products/Release/Countdown.saver ~/Library/Screen\ Savers/
-
-# 构建并运行 Preview App（用于在普通窗口里调试 saver，无需进系统偏好设置）
-xcodebuild -project Countdown.xcodeproj -scheme Preview -configuration Debug \
-  -derivedDataPath build build
-
-# 查看可用的 scheme / target
-xcodebuild -list -project Countdown.xcodeproj
+xcodebuild -list -project Countdown.xcodeproj   # 查看 scheme / target
 ```
 
-一般开发流程用 Xcode 打开 `Countdown.xcodeproj`，选 Preview scheme 运行；只有在验证真实的 ScreenSaver 集成时，才构建 Countdown scheme 并把 `.saver` 安装到 `~/Library/Screen Savers/`。
+一般开发流程用 `make preview` 快速迭代；只有在验证真实的 ScreenSaver 集成时，才 `make install` 并把 `.saver` 装进 `~/Library/Screen Savers/`。
+
+分发改动前先跑 `make install` 确认能装能用：没有 Developer ID 证书，产物是 ad-hoc 签名，无法公证，因此不提供预编译下载。
 
 ## 架构
 
